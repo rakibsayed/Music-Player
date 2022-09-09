@@ -78,6 +78,7 @@ let songIndex = 0;
 
 // Previous Song
 function prevSong() {
+  resetProgressBar();
   songIndex--;
   if (songIndex < 0) {
     songIndex = songs.length - 1;
@@ -93,6 +94,7 @@ function prevSong() {
 
 // Next Song
 function nextSong() {
+  resetProgressBar();
   songIndex++;
   if (songIndex > songs.length - 1) {
     songIndex = 0;
@@ -106,6 +108,12 @@ function nextSong() {
   }
 }
 
+//Reset ProgressBar
+function resetProgressBar(){
+  progress.style.width = `${0}%`;
+  currentTimeEl.textContent ='0:00'
+}
+
 // Update Progress Bar & Time
 function updateProgressBar(e) {
 
@@ -114,24 +122,29 @@ function updateProgressBar(e) {
     // Update progress bar width
     const progressPercent = (currentTime / duration) * 100;
     progress.style.width = `${progressPercent}%`;
-    
-    // Calculate display for currentTime
-    const currentMinutes = Math.floor(currentTime / 60);
-    let currentSeconds = Math.floor(currentTime % 60);
-    if (currentSeconds < 10) {
-      currentSeconds = `0${currentSeconds}`;
-    }
-    currentTimeEl.textContent = `${currentMinutes}:${currentSeconds}`;
+    displayCurrentTime(currentTime)
   }
 }
+
+// Calculate display for currentTime
+function displayCurrentTime(currentTime){
+  const currentMinutes = Math.floor(currentTime / 60);
+  let currentSeconds = Math.floor(currentTime % 60);
+  if (currentSeconds < 10) {
+    currentSeconds = `0${currentSeconds}`;
+  }
+  currentTimeEl.textContent = `${currentMinutes}:${currentSeconds}`;
+}
+
 
 // Set Progress Bar
 function setProgressBar(e) {
   const width = this.clientWidth;
   const clickX = e.offsetX;
   const { duration } = music;
-  console.log(duration);
   music.currentTime = (clickX / width) * duration;
+  progress.style.width = `${(music.currentTime / duration) * 100}%`;
+  displayCurrentTime(music.currentTime)
 }
 
 // Event Listeners
